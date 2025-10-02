@@ -1,45 +1,39 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+# Optimism Token (OPT)
 
-contract OptimismToken {
-    string public name = "Optimism Token";
-    string public symbol = "OPT";
-    uint8 public decimals = 18;
-    uint256 public totalSupply;
+A minimal ERC20-like token deployable on [Optimism](https://www.optimism.io/) using [Remix IDE](https://remix.ethereum.org/).  
+No external libraries (like OpenZeppelin) for easier verification on Optimism Explorer.
 
-    mapping(address => uint256) public balanceOf;
-    mapping(address => mapping(address => uint256)) public allowance;
+---
 
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+## 🚀 Deployment Steps
+1. Open [Remix IDE](https://remix.ethereum.org/).
+2. Create a new file `OptimismToken.sol` and paste the contract code.
+3. Set compiler version to `0.8.20` (enable optimization recommended).
+4. In Remix, go to **Deploy & Run** tab:
+   - Environment → `Injected Provider - MetaMask`
+   - Network → Switch to **Optimism Mainnet** or **Optimism Sepolia (testnet)**.
+5. Deploy with constructor parameter `_initialSupply` (e.g., `1000000`).
 
-    constructor(uint256 _initialSupply) {
-        totalSupply = _initialSupply * (10 ** uint256(decimals));
-        balanceOf[msg.sender] = totalSupply;
-        emit Transfer(address(0), msg.sender, totalSupply);
-    }
+---
 
-    function transfer(address to, uint256 value) public returns (bool) {
-        require(balanceOf[msg.sender] >= value, "Not enough balance");
-        balanceOf[msg.sender] -= value;
-        balanceOf[to] += value;
-        emit Transfer(msg.sender, to, value);
-        return true;
-    }
+## 🛠️ Usage
+- `transfer(address to, uint256 value)` → Send tokens.
+- `approve(address spender, uint256 value)` → Allow another address to spend tokens.
+- `transferFrom(address from, address to, uint256 value)` → Spender moves tokens.
 
-    function approve(address spender, uint256 value) public returns (bool) {
-        allowance[msg.sender][spender] = value;
-        emit Approval(msg.sender, spender, value);
-        return true;
-    }
+---
 
-    function transferFrom(address from, address to, uint256 value) public returns (bool) {
-        require(balanceOf[from] >= value, "Not enough balance");
-        require(allowance[from][msg.sender] >= value, "Not allowed");
-        balanceOf[from] -= value;
-        allowance[from][msg.sender] -= value;
-        balanceOf[to] += value;
-        emit Transfer(from, to, value);
-        return true;
-    }
-}
+## ✅ Example
+1. Deploy with `_initialSupply = 1000000` → Total supply = 1,000,000 OPT.
+2. Owner wallet receives full supply.
+3. Transfer to another wallet:  
+   `transfer("0xRecipientAddress", 1000 * 10^18)`
+
+---
+
+## 📌 Notes
+- This is a **minimal ERC20** (no burn/mint functions).
+- For production, use OpenZeppelin ERC20 standard.
+- Works on **Optimism mainnet & testnet**.
+
+
